@@ -1,6 +1,6 @@
 {
   "name": "check-eol",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "CLI for ensuring all given files match the desired newline pattern (LF or CRLF)",
   "main": "dist/index.js",
   "scripts": {

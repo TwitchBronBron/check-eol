@@ -1,5 +1,5 @@
 {
-  "name": "check-newlines",
+  "name": "check-eol",
   "version": "1.0.0",
   "description": "CLI for ensuring all given files match the desired newline pattern (LF or CRLF)",
   "main": "dist/index.js",
@@ -9,7 +9,7 @@
     "test:nocover": "mocha"
   },
   "bin": {
-    "check-line-endings": "dist/cli.js"
+    "check-eol": "dist/cli.js"
   },
   "author": "Bronley Plumb",
   "license": "MIT",

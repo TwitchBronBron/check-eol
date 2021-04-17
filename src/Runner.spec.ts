@@ -43,9 +43,9 @@ describe('Runner', () => {
     it('lf', async () => {
         writeDefaultFiles();
         expectResult(await runner.run(), [
-            'valid lf lf.txt',
             'invalid crlf crlf.txt',
             'invalid mixed mixed.txt',
+            'valid lf lf.txt',
             'valid none none.txt',
         ]);
     });
@@ -55,8 +55,8 @@ describe('Runner', () => {
         writeDefaultFiles();
         expectResult(await runner.run(), [
             'invalid lf lf.txt',
-            'valid crlf crlf.txt',
             'invalid mixed mixed.txt',
+            'valid crlf crlf.txt',
             'valid none none.txt',
         ]);
     });
@@ -67,8 +67,8 @@ describe('Runner', () => {
         writeDefaultFiles();
         expectResult(await runner.run(), [
             'invalid lf lf.txt',
-            'valid crlf crlf.txt',
             'invalid mixed mixed.txt',
+            'valid crlf crlf.txt',
             'valid none none.txt',
         ]);
     });
@@ -78,9 +78,9 @@ describe('Runner', () => {
         sinon.stub(os, 'platform').returns('darwin');
         writeDefaultFiles();
         expectResult(await runner.run(), [
-            'valid lf lf.txt',
             'invalid crlf crlf.txt',
             'invalid mixed mixed.txt',
+            'valid lf lf.txt',
             'valid none none.txt',
         ]);
     });
@@ -92,13 +92,15 @@ describe('Runner', () => {
 });
 
 function expectResult(actual: RunResult, expected: string[]) {
-    const actualResults = [actual.invalid, actual.valid]
-        .flatMap(x => x.map(x => `${x.type.toLowerCase()} ${standardizePath(x.filePath)}`))
+    const actualResults = [
+        ...actual.valid.map(x => `valid ${x.type.toLowerCase()} ${standardizePath(x.filePath)}`),
+        ...actual.invalid.map(x => `invalid ${x.type.toLowerCase()} ${standardizePath(x.filePath)}`)
+    ]
         .sort();
 
     const expectedResults = expected.map(x => {
-        const [, type, thePath] = /(mixed|lf|crlf|none)\s+(.*)/.exec(x) ?? [];
-        return `${type.toLowerCase()} ${standardizePath(`${tempDir}/${thePath}`)}`;
+        const [,validity, type, thePath] = /(valid|invalid) (mixed|lf|crlf|none)\s+(.*)/.exec(x) ?? [];
+        return `${validity.toLowerCase()} ${type.toLowerCase()} ${standardizePath(`${tempDir}/${thePath}`)}`;
     }).sort();
     expect(actualResults).to.eql(expectedResults);
 }

@@ -1,0 +1,67 @@
+{
+  "name": "check-newlines",
+  "version": "1.0.0",
+  "description": "CLI for ensuring all given files match the desired newline pattern (LF or CRLF)",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "nyc mocha",
+    "test:nocover": "mocha"
+  },
+  "bin": {
+    "check-line-endings": "dist/cli.js"
+  },
+  "author": "Bronley Plumb",
+  "license": "MIT",
+  "dependencies": {
+    "fdir": "^5.0.0",
+    "picomatch": "^2.2.3",
+    "yargs": "^16.2.0"
+  },
+  "devDependencies": {
+    "@types/mocha": "^8.2.2",
+    "@types/node": "^14.14.41",
+    "@types/sinon": "^10.0.0",
+    "@types/yargs": "^16.0.1",
+    "mocha": "^8.3.2",
+    "nyc": "^15.1.0",
+    "sinon": "^10.0.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4"
+  },
+  "mocha": {
+    "spec": "src/**/*.spec.ts",
+    "require": [
+      "source-map-support/register",
+      "ts-node/register"
+    ],
+    "fullTrace": true,
+    "watchExtensions": [
+      "ts"
+    ]
+  },
+  "nyc": {
+    "include": [
+      "src/**/*.ts",
+      "!src/**/*.spec.ts"
+    ],
+    "extension": [
+      ".ts"
+    ],
+    "require": [
+      "ts-node/register",
+      "source-map-support/register"
+    ],
+    "reporter": [
+      "text-summary",
+      "html"
+    ],
+    "sourceMap": true,
+    "instrument": true,
+    "check-coverage": false,
+    "lines": 100,
+    "statements": 100,
+    "functions": 100,
+    "branches": 100
+  }
+}

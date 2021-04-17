@@ -1,5 +1,5 @@
-import { fdir } from 'fdir';
-import * as fs from 'fs';
+import * as fsExtra from 'fs-extra';
+import * as globAll from 'glob-all';
 import * as os from 'os';
 import * as path from 'path';
 
@@ -29,7 +29,7 @@ export class Runner {
 
     public async run() {
         //find all the matching files
-        const files = await this.getFiles();
+        const files = this.getFiles();
 
         //process each file
         const results = await Promise.all(
@@ -47,7 +47,7 @@ export class Runner {
             if (result.type === 'mixed' || result.type !== expectedLineEnding) {
                 shouldFail = true;
                 console.log(result.filePath);
-                console.log('    Found', result.type, 'line endings but expected', expectedLineEnding.toUpperCase());
+                console.log('    Found', result.type, 'line endings but expected', expectedLineEnding);
             }
         }
         if (shouldFail === true) {
@@ -56,26 +56,18 @@ export class Runner {
     }
 
     private getFiles() {
-        return new fdir()
-            .withBasePath()
-            .glob(...this.options.files)
-            .crawl(this.cwd)
-            .withPromise() as Promise<string[]>;
-    }
-
-    private getFileContents(filePath: string) {
-        return new Promise<Buffer>(function (resolve) {
-            fs.readFile(filePath, function (err, data) {
-                if (err) {
-                    return Promise.reject(err);
-                }
-                return data;
-            });
-        })
+        return globAll.sync(
+            this.options.files,
+            {
+                cwd: this.cwd,
+                absolute: true,
+                follow: true
+            }
+        );
     }
 
     private async processFile(filePath: string) {
-        const buffer = await this.getFileContents(filePath);
+        const buffer = await fsExtra.readFile(filePath);
         var text = buffer.toString();
         var regexp = /\r?\n/g;
         var foundLF = false;

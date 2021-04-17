@@ -12,7 +12,11 @@
         "downlevelIteration": true,
         "noUnusedLocals": true,
         "allowSyntheticDefaultImports": true,
-        "alwaysStrict": true
+        "alwaysStrict": true,
+        "typeRoots": [
+            "node_modules/@types",
+            "src/types"
+        ]
     },
     "include": [
         "src/**/*.ts",

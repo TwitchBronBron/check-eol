@@ -6,7 +6,9 @@
   "scripts": {
     "build": "tsc",
     "test": "nyc mocha",
-    "test:nocover": "mocha"
+    "test:nocover": "mocha",
+    "lint": "eslint \"src/**\"",
+    "publish-coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "bin": {
     "check-eol": "dist/cli.js"
@@ -28,6 +30,7 @@
     "@types/sinon": "^10.0.0",
     "@types/yargs": "^16.0.1",
     "chai": "^4.3.4",
+    "coveralls": "^3.1.0",
     "fs-extra": "^9.1.0",
     "mocha": "^8.3.2",
     "nyc": "^15.1.0",

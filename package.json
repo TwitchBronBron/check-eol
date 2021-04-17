@@ -8,7 +8,8 @@
     "test": "nyc mocha",
     "test:nocover": "mocha",
     "lint": "eslint \"src/**\"",
-    "publish-coverage": "nyc report --reporter=text-lcov | coveralls"
+    "publish-coverage": "nyc report --reporter=text-lcov | coveralls",
+    "preversion": "npm run build && npm run test"
   },
   "bin": {
     "check-eol": "dist/cli.js"

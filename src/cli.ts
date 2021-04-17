@@ -14,15 +14,20 @@ yargs
     })
     .command('$0 [files..]', '', () => { }, async (argv: any) => {
         try {
+            console.log('Scanning files');
             const runner = new Runner(argv);
             const result = await runner.run();
+            const fileCount = result.invalid.length + result.valid.length;
             if (result.invalid.length > 0) {
-                console.error(`Found ${result.invalid.length} files with non-${runner.getExpectedLineEnding()} line endings`);
+                console.error(`${chalk.red('ERROR')}: Found ${result.invalid.length} files with non-${runner.getExpectedLineEnding()} line endings (out of ${fileCount} total).`);
                 for (const fileResult of result.invalid) {
                     console.log(chalk.red(fileResult.type.padEnd(5)), chalk.green(fileResult.filePath));
                 }
                 process.exit(1);
+            } else {
+                console.log(`${chalk.green('SUCCESS')}: Found no files with incorrect line endings (out of ${fileCount} total).`);
             }
+
         } catch (e) {
             console.error(e?.message || e);
             process.exit(1);

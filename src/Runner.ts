@@ -14,7 +14,7 @@ export class Runner {
         return path.resolve(this.options.cwd ?? process.cwd());
     }
 
-    private getExpectedLineEnding() {
+    public getExpectedLineEnding() {
         const eolLower = this.options.eol?.toLowerCase();
 
         if (eolLower === 'crlf') {
@@ -32,27 +32,27 @@ export class Runner {
         const files = this.getFiles();
 
         //process each file
-        const results = await Promise.all(
+        const fileResults = await Promise.all(
             files.map(x => this.processFile(x))
         );
 
-        var shouldFail = false;
+        const result = {
+            valid: [] as FileResult[],
+            invalid: [] as FileResult[]
+        } as RunResult;
+
         var expectedLineEnding = this.getExpectedLineEnding();
-        for (var i = 0; i < results.length; i++) {
-            var result = results[i];
+        for (var fileResult of fileResults) {
             //skip files with no line endings
-            if (result.type === 'none') {
-                continue;
-            }
-            if (result.type === 'mixed' || result.type !== expectedLineEnding) {
-                shouldFail = true;
-                console.log(result.filePath);
-                console.log('    Found', result.type, 'line endings but expected', expectedLineEnding);
+            if (fileResult.type === 'none') {
+                result.valid.push(fileResult);
+            } else if (fileResult.type === 'mixed' || fileResult.type !== expectedLineEnding) {
+                result.invalid.push(fileResult);
+            } else {
+                result.valid.push(fileResult);
             }
         }
-        if (shouldFail === true) {
-            return Promise.reject('Some line endings were incorrect');
-        }
+        return result;
     }
 
     private getFiles() {
@@ -96,7 +96,7 @@ export class Runner {
         return {
             filePath: filePath,
             type: type
-        }
+        } as FileResult;
     }
 }
 
@@ -115,4 +115,14 @@ interface RunnerOptions {
      * An array of file paths or globs that should be checked
      */
     files: string[];
+}
+
+export interface FileResult {
+    filePath: string;
+    type: 'lf' | 'crlf' | 'mixed' | 'none';
+}
+
+export interface RunResult {
+    valid: FileResult[];
+    invalid: FileResult[];
 }

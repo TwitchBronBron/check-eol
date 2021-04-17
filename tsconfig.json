@@ -16,6 +16,9 @@
         "typeRoots": [
             "node_modules/@types",
             "src/types"
+        ],
+        "lib": [
+            "ES2019.Array"
         ]
     },
     "include": [

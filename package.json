@@ -14,17 +14,20 @@
   "author": "Bronley Plumb",
   "license": "MIT",
   "dependencies": {
+    "chalk": "^4.1.0",
     "glob-all": "^3.2.1",
     "picomatch": "^2.2.3",
     "yargs": "^16.2.0"
   },
   "devDependencies": {
+    "@types/chai": "^4.2.16",
     "@types/fs-extra": "^9.0.11",
     "@types/glob": "^7.1.3",
     "@types/mocha": "^8.2.2",
     "@types/node": "^14.14.41",
     "@types/sinon": "^10.0.0",
     "@types/yargs": "^16.0.1",
+    "chai": "^4.3.4",
     "fs-extra": "^9.1.0",
     "mocha": "^8.3.2",
     "nyc": "^15.1.0",

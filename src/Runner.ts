@@ -61,7 +61,9 @@ export class Runner {
             {
                 cwd: this.cwd,
                 absolute: true,
-                follow: true
+                follow: true,
+                //ignore directories
+                nodir: true
             }
         );
     }

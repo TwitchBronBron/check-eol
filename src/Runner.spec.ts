@@ -89,6 +89,15 @@ describe('Runner', () => {
         runner.options.cwd = undefined;
         expect(runner['cwd']).to.eql(process.cwd());
     });
+
+    it('does not crash when reading directories', async () => {
+        writeFiles({
+            'dir1/dir2/lf.txt': 'line\nfeed'
+        });
+        expectResult(await runner.run(), [
+            'valid lf dir1/dir2/lf.txt'
+        ]);
+    });
 });
 
 function expectResult(actual: RunResult, expected: string[]) {
@@ -99,13 +108,13 @@ function expectResult(actual: RunResult, expected: string[]) {
         .sort();
 
     const expectedResults = expected.map(x => {
-        const [,validity, type, thePath] = /(valid|invalid) (mixed|lf|crlf|none)\s+(.*)/.exec(x) ?? [];
+        const [, validity, type, thePath] = /(valid|invalid) (mixed|lf|crlf|none)\s+(.*)/.exec(x) ?? [];
         return `${validity.toLowerCase()} ${type.toLowerCase()} ${standardizePath(`${tempDir}/${thePath}`)}`;
     }).sort();
     expect(actualResults).to.eql(expectedResults);
 }
 
-export function s(stringParts: string[], ...expressions: any[]) {
+export function s(stringParts: TemplateStringsArray, ...expressions: any[]) {
     let chunks = [];
     for (let i = 0; i < stringParts.length; i++) {
         chunks.push(stringParts[i], expressions[i]);

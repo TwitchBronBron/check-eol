@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import * as yargs from 'yargs';
 import { Runner } from './Runner';
 import * as chalk from 'chalk';

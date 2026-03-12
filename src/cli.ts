@@ -29,7 +29,7 @@ yargs
             }
 
         } catch (e) {
-            console.error(e?.message || e);
+            console.error((e as any)?.message || e);
             process.exit(1);
         }
     })

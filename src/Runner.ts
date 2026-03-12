@@ -1,5 +1,5 @@
+import * as fg from 'fast-glob';
 import * as fsExtra from 'fs-extra';
-import * as globAll from 'glob-all';
 import * as os from 'os';
 import * as path from 'path';
 
@@ -16,6 +16,7 @@ export class Runner {
 
     public getExpectedLineEnding() {
         const eolLower = this.options.eol?.toLowerCase();
+        console.log(eolLower, os.platform());
 
         if (eolLower === 'crlf') {
             return 'crlf';
@@ -28,44 +29,38 @@ export class Runner {
     }
 
     public async run() {
-        //find all the matching files
-        const files = this.getFiles();
-
-        //process each file
-        const fileResults = await Promise.all(
-            files.map(x => this.processFile(x))
-        );
-
         const result = {
             valid: [] as FileResult[],
             invalid: [] as FileResult[]
         } as RunResult;
 
-        var expectedLineEnding = this.getExpectedLineEnding();
-        for (var fileResult of fileResults) {
-            //skip files with no line endings
-            if (fileResult.type === 'none') {
-                result.valid.push(fileResult);
-            } else if (fileResult.type === 'mixed' || fileResult.type !== expectedLineEnding) {
-                result.invalid.push(fileResult);
-            } else {
-                result.valid.push(fileResult);
-            }
-        }
-        return result;
-    }
+        const expectedLineEnding = this.getExpectedLineEnding();
 
-    private getFiles() {
-        return globAll.sync(
-            this.options.files,
-            {
-                cwd: this.cwd,
-                absolute: true,
-                follow: true,
-                //ignore directories
-                nodir: true
-            }
-        );
+        const stream = fg.stream(this.options.files, {
+            cwd: this.cwd,
+            absolute: true,
+            followSymbolicLinks: true,
+            onlyFiles: true
+        });
+
+        const pending: Promise<void>[] = [];
+        for await (const filePath of stream) {
+            pending.push(
+                this.processFile(filePath as string).then(fileResult => {
+                    if (fileResult.type === 'none' || fileResult.type === expectedLineEnding) {
+                        result.valid.push(fileResult);
+                    } else {
+                        result.invalid.push(fileResult);
+                    }
+                })
+            );
+        }
+
+        await Promise.all(pending);
+        const sortByPath = (a: FileResult, b: FileResult) => a.filePath.localeCompare(b.filePath);
+        result.valid.sort(sortByPath);
+        result.invalid.sort(sortByPath);
+        return result;
     }
 
     private async processFile(filePath: string) {

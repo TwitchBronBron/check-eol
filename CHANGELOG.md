@@ -5,7 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.2.0](https://github.com/twitchbronbron/check-eol/compare/v0.1.0...v0.2.0) - 2026-03-12
+### Changed
+- use `fast-glob` and async parallel file processing for significant performance improvements ([#1](https://github.com/twitchbronbron/check-eol/pull/1))
 
-## [0.1.0] - 2021-04-17
-[0.1.0]:    https://github.com/rokucommunity/brighterscript/compare/204ff2955eb1670a36cbbfd4aa87b33549e39889...v0.1.0
+
+## [0.1.0](https://github.com/twitchbronbron/check-eol/compare/204ff2955eb1670a36cbbfd4aa87b33549e39889...v0.1.0) - 2021-04-17
 initial project add
